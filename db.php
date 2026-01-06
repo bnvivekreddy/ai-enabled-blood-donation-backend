@@ -19,7 +19,8 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 /**
  * Get database connection
  */
-function getConnection() {
+function getConnection()
+{
     try {
         $conn = new PDO(
             "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
@@ -41,7 +42,8 @@ function getConnection() {
 /**
  * Send JSON response
  */
-function sendResponse($success, $message, $data = null, $statusCode = 200) {
+function sendResponse($success, $message, $data = null, $statusCode = 200)
+{
     http_response_code($statusCode);
     echo json_encode([
         'success' => $success,
@@ -54,7 +56,8 @@ function sendResponse($success, $message, $data = null, $statusCode = 200) {
 /**
  * Get POST data as JSON
  */
-function getPostData() {
+function getPostData()
+{
     $json = file_get_contents('php://input');
     return json_decode($json, true);
 }
@@ -62,10 +65,17 @@ function getPostData() {
 /**
  * Validate required fields
  */
-function validateRequired($data, $fields) {
+function validateRequired($data, $fields)
+{
     $missing = [];
     foreach ($fields as $field) {
-        if (!isset($data[$field]) || empty(trim($data[$field]))) {
+        if (!isset($data[$field])) {
+            $missing[] = $field;
+            continue;
+        }
+
+        $value = trim((string) $data[$field]);
+        if ($value === '') { // Only fails if strictly empty string
             $missing[] = $field;
         }
     }
@@ -75,7 +85,8 @@ function validateRequired($data, $fields) {
 /**
  * Sanitize input
  */
-function sanitize($input) {
+function sanitize($input)
+{
     return htmlspecialchars(strip_tags(trim($input)));
 }
 ?>
